@@ -1,0 +1,289 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/koajs/koa-redis"
+
+    >koa-redis (v3.0.0)</a>
+</h1>
+<h4>koa session with redis using koa-generic-session</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.koa-redis">module koa-redis</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.koa-redis.koa-redis">
+            function <span class="apidocSignatureSpan"></span>koa-redis
+            <span class="apidocSignatureSpan">(options)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.koa-redis.super_">
+            function <span class="apidocSignatureSpan">koa-redis.</span>super_
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.koa-redis.toString">
+            function <span class="apidocSignatureSpan">koa-redis.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.koa-redis.toString">module koa-redis.toString</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.koa-redis.toString.toString">
+            function <span class="apidocSignatureSpan">koa-redis.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.koa-redis" id="apidoc.module.koa-redis">module koa-redis</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.koa-redis.koa-redis" id="apidoc.element.koa-redis.koa-redis">
+        function <span class="apidocSignatureSpan"></span>koa-redis
+        <span class="apidocSignatureSpan">(options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">koa-redis = function (options) {
+  if (!(this instanceof RedisStore)) {
+    return new RedisStore(options);
+  }
+  EventEmitter.call(this);
+  options = options || {};
+
+  var client;
+  options.auth_pass = options.auth_pass || options.pass || null;     // For backwards compatibility
+  options.path = options.path || options.socket || null;             // For backwards compatibility
+  if (!options.client) {
+    debug(&#x27;Init redis new client&#x27;);
+    client = redis.createClient(options);
+  } else {
+    if (options.duplicate) {                                         // Duplicate client and update with options provided
+      debug(&#x27;Duplicating provided client with new options (if provided)&#x27;);
+      var dupClient = options.client;
+      delete options.client;
+      delete options.duplicate;
+      client = dupClient.duplicate(options);                         // Useful if you want to use the DB option without adjusting
+ the client DB outside koa-redis
+    } else {
+      debug(&#x27;Using provided client&#x27;);
+      client = options.client;
+    }
+  }
+
+  if (options.db) {
+    debug(&#x27;selecting db %s&#x27;, options.db)
+    client.select(options.db);
+    client.on(&#x27;connect&#x27;, function() {
+      client.send_anyways = true;
+      client.select(options.db);
+      client.send_anyways = false;
+    });
+  }
+
+  client.on(&#x27;error&#x27;, this.emit.bind(this, &#x27;error&#x27;));
+  client.on(&#x27;end&#x27;, this.emit.bind(this, &#x27;end&#x27;));
+  client.on(&#x27;end&#x27;, this.emit.bind(this, &#x27;disconnect&#x27;));              // For backwards compatibility
+  client.on(&#x27;connect&#x27;, this.emit.bind(this, &#x27;connect&#x27;));
+  client.on(&#x27;reconnecting&#x27;, this.emit.bind(this, &#x27;reconnecting&#x27;));
+  client.on(&#x27;ready&#x27;, this.emit.bind(this, &#x27;ready&#x27;));
+  client.on(&#x27;warning&#x27;, this.emit.bind(this, &#x27;warning&#x27;));
+  this.on(&#x27;connect&#x27;, function() {
+    debug(&#x27;connected to redis&#x27;);
+    this.connected = client.connected;
+  });
+  this.on(&#x27;ready&#x27;, function() {
+    debug(&#x27;redis ready&#x27;);
+  });
+  this.on(&#x27;end&#x27;, function() {
+    debug(&#x27;redis ended&#x27;);
+    this.connected = client.connected;
+  });
+  // No good way to test error
+<span class="apidocCodeCommentSpan">  /* istanbul ignore next */
+</span>  this.on(&#x27;error&#x27;, function() {
+    debug(&#x27;redis error&#x27;);
+    this.connected = client.connected;
+  });
+  // No good way to test reconnect
+  /* istanbul ignore next */
+  this.on(&#x27;reconnecting&#x27;, function() {
+    debug(&#x27;redis reconnecting&#x27;);
+    this.connected = client.connected;
+  });
+  // No good way to test warning
+  /* istanbul ignore next */
+  this.on(&#x27;warning&#x27;, function() {
+    debug(&#x27;redis warning&#x27;);
+    this.connected = client.connected;
+  });
+
+  //wrap redis
+  this._redisClient = client;
+  this.client = redisWrapper(client);
+  this.connected = client.connected;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.koa-redis.super_" id="apidoc.element.koa-redis.super_">
+        function <span class="apidocSignatureSpan">koa-redis.</span>super_
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function EventEmitter() {
+  EventEmitter.init.call(this);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.koa-redis.toString" id="apidoc.element.koa-redis.toString">
+        function <span class="apidocSignatureSpan">koa-redis.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">toString = function () {
+    return text;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+RedisStore.prototype.get = function *(sid) {
+  var data = yield this.client.get(sid);
+  debug(&#x27;get session: %s&#x27;, data || &#x27;none&#x27;);
+  if (!data) {
+    return null;
+  }
+  try {
+    return JSON.parse(data.<span class="apidocCodeKeywordSpan">toString</span>());
+  } catch (err) {
+    // ignore err
+    debug(&#x27;parse session error: %s&#x27;, err.message);
+  }
+};
+
+RedisStore.prototype.set = function *(sid, sess, ttl) {
+...</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.koa-redis.toString" id="apidoc.module.koa-redis.toString">module koa-redis.toString</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.koa-redis.toString.toString" id="apidoc.element.koa-redis.toString.toString">
+        function <span class="apidocSignatureSpan">koa-redis.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function toString() { [native code] }</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+RedisStore.prototype.get = function *(sid) {
+  var data = yield this.client.get(sid);
+  debug(&#x27;get session: %s&#x27;, data || &#x27;none&#x27;);
+  if (!data) {
+    return null;
+  }
+  try {
+    return JSON.parse(data.<span class="apidocCodeKeywordSpan">toString</span>());
+  } catch (err) {
+    // ignore err
+    debug(&#x27;parse session error: %s&#x27;, err.message);
+  }
+};
+
+RedisStore.prototype.set = function *(sid, sess, ttl) {
+...</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
