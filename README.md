@@ -1,4 +1,7 @@
-# api documentation for  [koa-redis (v3.0.0)](https://github.com/koajs/koa-redis)  [![npm package](https://img.shields.io/npm/v/npmdoc-koa-redis.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-koa-redis) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-koa-redis.svg)](https://travis-ci.org/npmdoc/node-npmdoc-koa-redis)
+# npmdoc-koa-redis
+
+#### basic api documentation for  [koa-redis (v3.0.0)](https://github.com/koajs/koa-redis)  [![npm package](https://img.shields.io/npm/v/npmdoc-koa-redis.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-koa-redis) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-koa-redis.svg)](https://travis-ci.org/npmdoc/node-npmdoc-koa-redis)
+
 #### koa session with redis using koa-generic-session
 
 [![NPM](https://nodei.co/npm/koa-redis.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/koa-redis)
@@ -82,7 +85,8 @@
         "test": "istanbul cover node_modules/mocha/bin/_mocha -- --require co-mocha \"test/**/*.test.js\"",
         "test-only": "mocha --require co-mocha \"test/**/*.test.js\""
     },
-    "version": "3.0.0"
+    "version": "3.0.0",
+    "bin": {}
 }
 ```
 
