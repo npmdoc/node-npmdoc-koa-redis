@@ -72,28 +72,6 @@
 
         </li>
 
-        <li>
-
-            <a class="apidocElementLiA" href="#apidoc.element.koa-redis.toString">
-            function <span class="apidocSignatureSpan">koa-redis.</span>toString
-            <span class="apidocSignatureSpan">()</span>
-            </a>
-
-        </li>
-
-    </ol></li>
-
-    <li class="apidocModuleLi"><a href="#apidoc.module.koa-redis.toString">module koa-redis.toString</a><ol>
-
-        <li>
-
-            <a class="apidocElementLiA" href="#apidoc.element.koa-redis.toString.toString">
-            function <span class="apidocSignatureSpan">koa-redis.</span>toString
-            <span class="apidocSignatureSpan">()</span>
-            </a>
-
-        </li>
-
     </ol></li>
 
 </ol></div>
@@ -204,71 +182,6 @@
   EventEmitter.init.call(this);
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
-    </ul>
-
-
-
-    <h2>
-        <a href="#apidoc.element.koa-redis.toString" id="apidoc.element.koa-redis.toString">
-        function <span class="apidocSignatureSpan">koa-redis.</span>toString
-        <span class="apidocSignatureSpan">()</span>
-        </a>
-    </h2>
-    <ul>
-    <li>description and source-code<pre class="apidocCodePre">toString = function () {
-    return text;
-}</pre></li>
-    <li>example usage<pre class="apidocCodePre">...
-RedisStore.prototype.get = function *(sid) {
-  var data = yield this.client.get(sid);
-  debug('get session: %s', data || 'none');
-  if (!data) {
-    return null;
-  }
-  try {
-    return JSON.parse(data.<span class="apidocCodeKeywordSpan">toString</span>());
-  } catch (err) {
-    // ignore err
-    debug('parse session error: %s', err.message);
-  }
-};
-
-RedisStore.prototype.set = function *(sid, sess, ttl) {
-...</pre></li>
-    </ul>
-
-
-</div>
-
-<div class="apidocSectionDiv">
-<h1><a href="#apidoc.module.koa-redis.toString" id="apidoc.module.koa-redis.toString">module koa-redis.toString</a></h1>
-
-
-    <h2>
-        <a href="#apidoc.element.koa-redis.toString.toString" id="apidoc.element.koa-redis.toString.toString">
-        function <span class="apidocSignatureSpan">koa-redis.</span>toString
-        <span class="apidocSignatureSpan">()</span>
-        </a>
-    </h2>
-    <ul>
-    <li>description and source-code<pre class="apidocCodePre">function toString() { [native code] }</pre></li>
-    <li>example usage<pre class="apidocCodePre">...
-RedisStore.prototype.get = function *(sid) {
-  var data = yield this.client.get(sid);
-  debug('get session: %s', data || 'none');
-  if (!data) {
-    return null;
-  }
-  try {
-    return JSON.parse(data.<span class="apidocCodeKeywordSpan">toString</span>());
-  } catch (err) {
-    // ignore err
-    debug('parse session error: %s', err.message);
-  }
-};
-
-RedisStore.prototype.set = function *(sid, sess, ttl) {
-...</pre></li>
     </ul>
 
 
